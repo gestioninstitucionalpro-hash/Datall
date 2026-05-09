@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Intelligence & ML Agents</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                            950: '#450a0a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafafa;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Story scroll styles */
+        .story-container {
+            position: relative;
+        }
+        
+        .story-content {
+            position: sticky;
+            top: 20vh;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .story-step {
+            opacity: 0.2;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateY(20px);
+            padding: 4rem 0;
+        }
+        
+        .story-step.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Particles animation background for hero */
+        .hero-bg {
+            background: radial-gradient(circle at top right, rgba(220, 38, 38, 0.05) 0%, transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(15, 23, 42, 0.05) 0%, transparent 40%);
+        }
+
+        /* Float animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+            animation: float 5s ease-in-out infinite 2s;
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- 1. Header -->
+    <header class="fixed w-full top-0 z-50 glass transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                    <div class="w-8 h-8 rounded bg-brand-600 flex items-center justify-center">
+                        <i data-lucide="bar-chart-2" class="text-white w-5 h-5"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight text-slate-900">Data<span class="text-brand-600">Intel</span></span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="text-slate-600 hover:text-brand-600 font-medium text-sm transition-colors">Inicio</a>
+                    <a href="#servicios" class="text-slate-600 hover:text-brand-600 font-medium text-sm transition-colors">Servicios</a>
+                    <a href="#soluciones" class="text-slate-600 hover:text-brand-600 font-medium text-sm transition-colors">Soluciones</a>
+                    <a href="#metodologia" class="text-slate-600 hover:text-brand-600 font-medium text-sm transition-colors">Metodología</a>
+                </nav>
+
+                <!-- CTA Button -->
+                <div class="hidden md:flex items-center">
+                    <a href="#contacto" class="bg-slate-900 hover:bg-brand-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
+                        Solicitar diagnóstico <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. Hero Section -->
+    <section id="inicio" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden hero-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="z-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 text-brand-700 text-xs font-semibold mb-6">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                        Soluciones B2B para el Sector Financiero
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-slate-900">
+                        Inteligencia de negocios y <span class="text-brand-600 relative">agentes de ML
+                            <svg class="absolute w-full h-3 -bottom-1 left-0 text-brand-200 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round"/>
+                            </svg>
+                        </span> para decisiones financieras
+                    </h1>
+                    <p class="text-lg text-slate-600 mb-8 max-w-xl leading-relaxed">
+                        Convertimos datos dispersos en tableros, modelos predictivos, alertas tempranas y agentes inteligentes que apoyan la toma de decisiones comerciales y de riesgo.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#contacto" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-semibold text-center transition-all shadow-lg hover:shadow-brand-500/30 flex items-center justify-center gap-2">
+                            Solicitar una demo <i data-lucide="calendar" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#soluciones" class="bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 px-6 py-3 rounded-lg font-semibold text-center transition-all flex items-center justify-center gap-2">
+                            Ver soluciones
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Visual Elements / Floating Cards -->
+                <div class="relative h-[400px] lg:h-[500px] z-10 hidden md:block">
+                    <!-- Decorator Circle -->
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-brand-600/5 rounded-full blur-3xl"></div>
+                    
+                    <!-- Main Dashboard Card -->
+                    <div class="absolute top-10 right-10 bg-white rounded-xl shadow-xl border border-slate-100 p-5 w-72 animate-float glass">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-slate-800 text-sm">Predicción de Riesgo</h3>
+                            <i data-lucide="activity" class="text-brand-600 w-4 h-4"></i>
+                        </div>
+                        <div class="flex items-end gap-2 mb-2">
+                            <span class="text-3xl font-bold text-slate-900">94.2%</span>
+                            <span class="text-xs text-green-500 font-medium mb-1 flex items-center"><i data-lucide="trending-up" class="w-3 h-3 mr-1"></i> +2.4%</span>
+                        </div>
+                        <p class="text-xs text-slate-500">Precisión del modelo de scoring</p>
+                        <!-- Fake Chart -->
+                        <div class="mt-4 flex items-end gap-1 h-12">
+                            <div class="w-1/6 bg-slate-100 rounded-t h-1/3"></div>
+                            <div class="w-1/6 bg-slate-100 rounded-t h-1/2"></div>
+                            <div class="w-1/6 bg-brand-100 rounded-t h-3/4"></div>
+                            <div class="w-1/6 bg-brand-200 rounded-t h-full"></div>
+                            <div class="w-1/6 bg-brand-400 rounded-t h-4/5"></div>
+                            <div class="w-1/6 bg-brand-600 rounded-t h-full"></div>
+                        </div>
+                    </div>
+
+                    <!-- Alert Card -->
+                    <div class="absolute bottom-20 left-0 bg-slate-900 rounded-xl shadow-2xl border border-slate-700 p-4 w-64 animate-float-delayed">
+                        <div class="flex gap-3">
+                            <div class="bg-red-500/20 p-2 rounded-lg h-fit">
+                                <i data-lucide="bell-ring" class="text-red-400 w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white text-sm font-medium">Alerta de Morosidad</h4>
+                                <p class="text-slate-400 text-xs mt-1">El segmento PYME muestra un incremento de riesgo potencial en 30 días.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Agent Card -->
+                    <div class="absolute top-1/2 -left-10 transform -translate-y-1/2 bg-white rounded-xl shadow-lg border border-slate-100 p-4 w-56 animate-float" style="animation-delay: 1s;">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="relative">
+                                <div class="w-10 h-10 rounded-full border-2 border-brand-100 bg-slate-100 flex items-center justify-center">
+                                    <i data-lucide="bot" class="text-slate-600 w-5 h-5"></i>
+                                </div>
+                                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate-800">Agent-X</h4>
+                                <p class="text-xs text-slate-500">Analista Virtual</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded p-2 text-xs text-slate-600 border border-slate-100">
+                            "He detectado una oportunidad de up-selling en la cartera B."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Story-Scroll Section -->
+    <section class="py-24 bg-slate-50 border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-brand-600 font-semibold tracking-wide uppercase text-sm mb-2">Nuestro Proceso</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">De datos crudos a decisiones automatizadas</h3>
+                <p class="text-slate-600">Acompañamos a su institución en cada etapa de madurez analítica, construyendo soluciones robustas y escalables.</p>
+            </div>
+
+            <!-- Story Scroll Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 relative">
+                <!-- Left: Scrollable Text -->
+                <div class="story-container relative pb-32">
+                    <div class="story-step active" id="step-1">
+                        <div class="w-12 h-12 bg-white shadow rounded-lg flex items-center justify-center mb-6 text-brand-600 text-xl font-bold border border-slate-100">01</div>
+                        <h4 class="text-2xl font-bold text-slate-900 mb-4">Diagnóstico e Integración</h4>
+                        <p class="text-slate-600 leading-relaxed mb-6">Conectamos sus fuentes de datos dispersas (core bancario, CRM, ERP, hojas de cálculo) en un único repositorio seguro y estructurado. Limpiamos y preparamos la información para el análisis avanzado.</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-sm text-slate-700"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 mr-2"></i> Auditoría de calidad de datos</li>
+                            <li class="flex items-center text-sm text-slate-700"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 mr-2"></i> Pipelines automatizados (ETL/ELT)</li>
+                        </ul>
+                    </div>
+
+                    <div class="story-step" id="step-2">
+                        <div class="w-12 h-12 bg-white shadow rounded-lg flex items-center justify-center mb-6 text-brand-600 text-xl font-bold border border-slate-100">02</div>
+                        <h4 class="text-2xl font-bold text-slate-900 mb-4">Inteligencia de Negocios</h4>
+                        <p class="text-slate-600 leading-relaxed mb-6">Transformamos los datos limpios en tableros ejecutivos interactivos. Monitoree sus KPIs financieros y comerciales en tiempo real con vistas personalizadas para cada gerencia.</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-sm text-slate-700"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 mr-2"></i> Dashboards gerenciales</li>
+                            <li class="flex items-center text-sm text-slate-700"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 mr-2"></i> Visualización de indicadores clave</li>
+                        </ul>
+                    </div>
+
+                    <div class="story-step" id="step-3">
+                        <div class="w-12 h-12 bg-white shadow rounded-lg flex items-center justify-center mb-6 text-brand-600 text-xl font-bold border border-slate-100">03</div>
+                        <h4 class="text-2xl font-bold text-slate-900 mb-4">Modelos Predictivos</h4>
+                        <p class="text-slate-600 leading-relaxed mb-6">Aplicamos Machine Learning para anticipar comportamientos. Predecimos morosidad, identificamos riesgo crediticio, pronosticamos ventas y detectamos patrones de fuga de clientes.</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-sm text-slate-700"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 mr-2"></i> Scoring y calificación de riesgo</li>
+                            <li class="flex items-center text-sm text-slate-700"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 mr-2"></i> Modelos de propensión de compra</li>
+                        </ul>
+                    </div>
+
+                    <div class="story-step" id="step-4">
+                        <div class="w-12 h-12 bg-white shadow rounded-lg flex items-center justify-center mb-6 text-brand-600 text-xl font-bold border border-slate-100">04</div>
+                        <h4 class="text-2xl font-bold text-slate-900 mb-4">Agentes Inteligentes</h4>
+                        <p class="text-slate-600 leading-relaxed mb-6">Desplegamos agentes virtuales potenciados por IA generativa que analizan datos por usted, responden consultas en lenguaje natural y automatizan reportes e insights diarios.</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-sm text-slate-700"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 mr-2"></i> Consultas a bases de datos con texto natural</li>
+                            <li class="flex items-center text-sm text-slate-700"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 mr-2"></i> Alertas tempranas accionables</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right: Sticky Visuals -->
+                <div class="hidden lg:block relative">
+                    <div class="sticky top-1/4 h-[500px] w-full rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden flex items-center justify-center transition-all duration-500" id="visual-container">
+                        
+                        <!-- Visual 1: Database/Integration -->
+                        <div class="absolute inset-0 p-8 flex flex-col items-center justify-center transition-opacity duration-500 opacity-100" id="visual-1">
+                            <div class="w-full max-w-sm">
+                                <div class="flex justify-between items-center mb-8">
+                                    <div class="p-4 bg-slate-50 rounded-xl shadow-sm border border-slate-100"><i data-lucide="database" class="w-8 h-8 text-slate-400"></i></div>
+                                    <div class="flex-1 h-0.5 bg-slate-200 relative"><div class="absolute inset-0 bg-brand-500 w-full animate-pulse"></div></div>
+                                    <div class="p-4 bg-brand-50 rounded-xl shadow-sm border border-brand-100"><i data-lucide="server" class="w-8 h-8 text-brand-600"></i></div>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 font-mono text-xs text-slate-500">
+                                    <p>> Conectando API Core Bancario...</p>
+                                    <p class="text-green-500">> Extracción exitosa: 2.4M registros</p>
+                                    <p>> Limpiando nulos y duplicados...</p>
+                                    <p class="text-brand-600 animate-pulse">> Sincronizando Data Warehouse_</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual 2: Dashboard -->
+                        <div class="absolute inset-0 p-6 flex flex-col transition-opacity duration-500 opacity-0" id="visual-2">
+                            <div class="flex justify-between items-center mb-6">
+                                <div class="w-32 h-4 bg-slate-200 rounded"></div>
+                                <div class="flex gap-2">
+                                    <div class="w-8 h-8 bg-slate-100 rounded-full"></div>
+                                    <div class="w-8 h-8 bg-brand-100 rounded-full text-brand-600 flex items-center justify-center text-xs font-bold">R</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-4 mb-6">
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                    <div class="w-16 h-3 bg-slate-200 rounded mb-2"></div>
+                                    <div class="text-xl font-bold text-slate-800">$4.2M</div>
+                                </div>
+                                <div class="bg-brand-50 p-4 rounded-xl border border-brand-100">
+                                    <div class="w-16 h-3 bg-brand-200 rounded mb-2"></div>
+                                    <div class="text-xl font-bold text-brand-700">12.4%</div>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                    <div class="w-16 h-3 bg-slate-200 rounded mb-2"></div>
+                                    <div class="text-xl font-bold text-slate-800">845</div>
+                                </div>
+                            </div>
+                            <div class="flex-1 bg-slate-50 rounded-xl border border-slate-100 p-4 relative">
+                                <svg viewBox="0 0 100 40" class="w-full h-full overflow-visible">
+                                    <path d="M0 30 Q 10 20 20 25 T 40 15 T 60 20 T 80 5 T 100 10" fill="none" stroke="#ef4444" stroke-width="2" />
+                                    <path d="M0 40 L 0 30 Q 10 20 20 25 T 40 15 T 60 20 T 80 5 T 100 10 L 100 40 Z" fill="rgba(239, 68, 68, 0.1)" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Visual 3: Machine Learning -->
+                        <div class="absolute inset-0 p-8 flex items-center justify-center transition-opacity duration-500 opacity-0" id="visual-3">
+                            <div class="relative w-full max-w-sm aspect-square">
+                                <!-- Central Node -->
+                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-brand-600 rounded-full z-10 flex items-center justify-center shadow-lg shadow-brand-500/40">
+                                    <i data-lucide="cpu" class="text-white w-8 h-8"></i>
+                                </div>
+                                
+                                <!-- Orbiting Elements -->
+                                <div class="absolute inset-0 border border-slate-200 rounded-full animate-[spin_10s_linear_infinite]">
+                                    <div class="absolute -top-3 left-1/2 w-6 h-6 bg-white border-2 border-slate-300 rounded-full"></div>
+                                    <div class="absolute top-1/2 -right-3 w-6 h-6 bg-white border-2 border-slate-300 rounded-full"></div>
+                                </div>
+                                <div class="absolute inset-8 border border-brand-200 rounded-full animate-[spin_7s_linear_infinite_reverse]">
+                                    <div class="absolute bottom-0 left-1/4 w-4 h-4 bg-brand-400 rounded-full shadow-[0_0_10px_rgba(248,113,113,0.8)]"></div>
+                                </div>
+
+                                <!-- Result Card -->
+                                <div class="absolute bottom-4 right-4 bg-slate-900 p-3 rounded-lg shadow-xl z-20">
+                                    <div class="text-xs text-slate-400 mb-1">Probabilidad Default</div>
+                                    <div class="text-xl font-bold text-red-400">87.5%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual 4: AI Agent -->
+                        <div class="absolute inset-0 p-6 flex flex-col transition-opacity duration-500 opacity-0 bg-slate-50" id="visual-4">
+                            <div class="flex-1 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
+                                <div class="p-4 border-b border-slate-100 flex items-center gap-3 bg-slate-50">
+                                    <div class="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center"><i data-lucide="bot" class="w-4 h-4 text-brand-600"></i></div>
+                                    <div>
+                                        <div class="text-sm font-semibold text-slate-800">Financial AI Assistant</div>
+                                        <div class="text-xs text-green-500 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-1"></span> Online</div>
+                                    </div>
+                                </div>
+                                <div class="flex-1 p-4 flex flex-col gap-4">
+                                    <div class="self-end bg-brand-600 text-white p-3 rounded-2xl rounded-tr-sm text-sm max-w-[80%] shadow-sm">
+                                        ¿Cuál fue la rentabilidad del producto Crédito Microempresa este trimestre frente al anterior?
+                                    </div>
+                                    <div class="self-start bg-slate-100 text-slate-800 p-3 rounded-2xl rounded-tl-sm text-sm max-w-[90%] border border-slate-200">
+                                        Analizando datos... <br>
+                                        La rentabilidad de <strong>Crédito Microempresa</strong> aumentó un <strong>4.2%</strong> este trimestre. El margen pasó de 12.1% a 16.3%. <br><br>
+                                        <em>Factor clave:</em> Reducción del 2% en cartera vencida > 30 días en la zona norte.
+                                    </div>
+                                </div>
+                                <div class="p-3 border-t border-slate-100 bg-white">
+                                    <div class="h-10 bg-slate-100 rounded-full border border-slate-200 flex items-center px-4 text-slate-400 text-sm">
+                                        Escribe tu consulta...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Servicios Principales -->
+    <section id="servicios" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Portafolio de Servicios</h2>
+                <p class="text-slate-600">Desarrollamos soluciones analíticas end-to-end adaptadas a la realidad de su institución.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-brand-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-600 transition-colors">
+                        <i data-lucide="layout-dashboard" class="w-7 h-7 text-brand-600 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Dashboards Ejecutivos</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Centralice la información de su institución en tableros visuales e interactivos. Mida KPIs, metas y desempeño en tiempo real sin depender de TI.</p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-brand-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-600 transition-colors">
+                        <i data-lucide="network" class="w-7 h-7 text-brand-600 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Modelos Predictivos</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Algoritmos de Machine Learning entrenados con sus históricos para predecir morosidad, fuga de socios, propensión a créditos y pronóstico de liquidez.</p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-slate-900 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="bot" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Agentes de IA Generativa</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Analistas virtuales que se conectan a sus bases de datos. Permita que sus gerentes "conversen" con los datos en lenguaje natural para obtener insights inmediatos.</p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-brand-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-600 transition-colors">
+                        <i data-lucide="bell" class="w-7 h-7 text-brand-600 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Alertas Tempranas</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Sistemas automatizados que detectan anomalías financieras, cambios bruscos de comportamiento de pago o desviaciones de presupuesto, notificando al instante.</p>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-brand-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-600 transition-colors">
+                        <i data-lucide="users" class="w-7 h-7 text-brand-600 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Segmentación Avanzada</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Agrupación inteligente de clientes o socios basada en comportamiento transaccional, rentabilidad y riesgo para campañas de marketing hiper-personalizadas.</p>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-brand-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-600 transition-colors">
+                        <i data-lucide="file-spreadsheet" class="w-7 h-7 text-brand-600 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Automatización de Reportes</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Elimine horas de trabajo manual en Excel. Generamos pipelines que consolidan la información y distribuyen reportes gerenciales automáticamente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5 & 6. Soluciones Sectoriales (Tabs) -->
+    <section id="soluciones" class="py-24 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Soluciones por Industria</h2>
+                <p class="text-slate-600">Modelos y tableros pre-diseñados para las necesidades específicas de su sector.</p>
+            </div>
+
+            <!-- Custom Tabs -->
+            <div class="flex justify-center mb-10">
+                <div class="bg-white p-1 rounded-xl shadow-sm border border-slate-200 inline-flex">
+                    <button class="tab-btn px-6 py-2.5 text-sm font-medium rounded-lg bg-slate-900 text-white shadow transition-all" data-target="financiero">
+                        Sector Financiero
+                    </button>
+                    <button class="tab-btn px-6 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 transition-all" data-target="comercial">
+                        Entidades Comerciales
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Content: Financiero -->
+            <div id="financiero" class="tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-[fadeIn_0.5s_ease-in-out]">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="shield-alert" class="w-5 h-5 text-brand-600"></i> Predicción de Morosidad</h4>
+                    <p class="text-sm text-slate-600">Identifique con meses de anticipación qué créditos tienen alta probabilidad de entrar en mora.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="target" class="w-5 h-5 text-brand-600"></i> Scoring de Riesgo</h4>
+                    <p class="text-sm text-slate-600">Modelos propios de originación para calificar solicitudes de crédito basados en datos alternativos e históricos.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="pie-chart" class="w-5 h-5 text-brand-600"></i> Análisis de Cartera</h4>
+                    <p class="text-sm text-slate-600">Tableros dinámicos para monitorear cosechas, roll rates y provisiones por agencia o producto.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="users-2" class="w-5 h-5 text-brand-600"></i> Seguimiento de Socios</h4>
+                    <p class="text-sm text-slate-600">Para cooperativas: analice la transaccionalidad, ahorro y vinculación integral del socio.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="trending-up" class="w-5 h-5 text-brand-600"></i> Rentabilidad por Producto</h4>
+                    <p class="text-sm text-slate-600">Costeo y análisis de márgenes precisos para entender qué productos financieros subsidian a otros.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="bell" class="w-5 h-5 text-brand-600"></i> Alertas de Pago</h4>
+                    <p class="text-sm text-slate-600">Notificaciones automáticas ante caídas en saldos de cuentas de ahorro previo a la fecha de pago.</p>
+                </div>
+            </div>
+
+            <!-- Tab Content: Comercial -->
+            <div id="comercial" class="tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden animate-[fadeIn_0.5s_ease-in-out]">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="line-chart" class="w-5 h-5 text-brand-600"></i> Pronóstico de Ventas</h4>
+                    <p class="text-sm text-slate-600">Modelos de series de tiempo para estimar la demanda futura y optimizar la planificación.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="users" class="w-5 h-5 text-brand-600"></i> Segmentación (RFM)</h4>
+                    <p class="text-sm text-slate-600">Clasificación de clientes por Recencia, Frecuencia y Monto para estrategias de retención.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="package" class="w-5 h-5 text-brand-600"></i> Control de Inventarios</h4>
+                    <p class="text-sm text-slate-600">Dashboards que alertan sobre quiebres de stock, sobrestock y rotación lenta de SKU.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="dollar-sign" class="w-5 h-5 text-brand-600"></i> Análisis de Rentabilidad</h4>
+                    <p class="text-sm text-slate-600">Visibilidad detallada de márgenes netos por categoría, sucursal o vendedor.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="shopping-cart" class="w-5 h-5 text-brand-600"></i> Patrones de Compra</h4>
+                    <p class="text-sm text-slate-600">Análisis de canasta para descubrir qué productos se compran juntos (Cross-selling).</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-brand-300 transition-colors">
+                    <h4 class="font-bold text-slate-900 flex items-center gap-2 mb-2"><i data-lucide="file-bar-chart" class="w-5 h-5 text-brand-600"></i> Reportes Gerenciales</h4>
+                    <p class="text-sm text-slate-600">Consolidación automática del P&L diario sin depender de cierres contables mensuales.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Sección de Métricas -->
+    <section class="py-20 bg-slate-900 text-white overflow-hidden relative">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ef4444 1px, transparent 1px); background-size: 30px 30px;"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="text-center p-6 glass-dark rounded-2xl transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-brand-500 mb-2 flex justify-center"><i data-lucide="zap" class="w-8 h-8"></i></div>
+                    <div class="text-4xl font-bold mb-2">+35%</div>
+                    <div class="text-slate-400 text-sm">Mejora en velocidad<br>de análisis</div>
+                </div>
+                <div class="text-center p-6 glass-dark rounded-2xl transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-brand-500 mb-2 flex justify-center"><i data-lucide="file-minus" class="w-8 h-8"></i></div>
+                    <div class="text-4xl font-bold mb-2">-25%</div>
+                    <div class="text-slate-400 text-sm">Reducción de<br>reportes manuales</div>
+                </div>
+                <div class="text-center p-6 glass-dark rounded-2xl transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-brand-500 mb-2 flex justify-center"><i data-lucide="crosshair" class="w-8 h-8"></i></div>
+                    <div class="text-4xl font-bold mb-2">+40%</div>
+                    <div class="text-slate-400 text-sm">Precisión en<br>alertas tempranas</div>
+                </div>
+                <div class="text-center p-6 glass-dark rounded-2xl transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-brand-500 mb-2 flex justify-center"><i data-lucide="clock" class="w-8 h-8"></i></div>
+                    <div class="text-4xl font-bold mb-2">24/7</div>
+                    <div class="text-slate-400 text-sm">Agentes inteligentes<br>disponibles</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Metodología -->
+    <section id="metodologia" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Metodología de Trabajo</h2>
+                <p class="text-slate-600">Un enfoque ágil y estructurado para garantizar el retorno de inversión en sus proyectos de datos.</p>
+            </div>
+
+            <div class="relative">
+                <!-- Line connector -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 transform -translate-y-1/2 z-0"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-6 gap-6 relative z-10">
+                    <!-- Step 1 -->
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 bg-white rounded-full border-2 border-brand-200 flex items-center justify-center font-bold text-brand-600 shadow-sm mb-4 relative">
+                            1
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-2">Levantamiento</h4>
+                        <p class="text-xs text-slate-500">Definición de KPIs y necesidades de negocio.</p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 bg-white rounded-full border-2 border-brand-300 flex items-center justify-center font-bold text-brand-600 shadow-sm mb-4">
+                            2
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-2">Integración</h4>
+                        <p class="text-xs text-slate-500">Limpieza y conexión de fuentes de datos.</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 bg-white rounded-full border-2 border-brand-400 flex items-center justify-center font-bold text-brand-600 shadow-sm mb-4">
+                            3
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-2">Diseño</h4>
+                        <p class="text-xs text-slate-500">Construcción de indicadores y wireframes.</p>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 bg-white rounded-full border-2 border-brand-500 flex items-center justify-center font-bold text-white bg-brand-500 shadow-sm mb-4">
+                            4
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-2">Modelado</h4>
+                        <p class="text-xs text-slate-500">Entrenamiento de algoritmos predictivos.</p>
+                    </div>
+                    <!-- Step 5 -->
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 bg-white rounded-full border-2 border-brand-600 flex items-center justify-center font-bold text-white bg-brand-600 shadow-sm mb-4">
+                            5
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-2">Despliegue</h4>
+                        <p class="text-xs text-slate-500">Puesta en producción de dashboards y agentes.</p>
+                    </div>
+                    <!-- Step 6 -->
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 bg-white rounded-full border-2 border-slate-900 flex items-center justify-center font-bold text-white bg-slate-900 shadow-sm mb-4">
+                            6
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-2">Adopción</h4>
+                        <p class="text-xs text-slate-500">Capacitación y acompañamiento continuo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. Perfil del Consultor -->
+    <section id="consultor" class="py-24 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row items-center">
+                <!-- Foto -->
+                <div class="w-full md:w-2/5 bg-slate-200 relative h-80 md:h-[450px]">
+                    <img src="foto para web.jpg" alt="Alexander Haro" class="absolute inset-0 w-full h-full object-cover object-top" onerror="this.src='https://ui-avatars.com/api/?name=Alexander+Haro&size=512&background=ef4444&color=fff'">
+                </div>
+                <!-- Contenido -->
+                <div class="w-full md:w-3/5 p-10 md:p-14">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 border border-green-100 text-green-700 text-xs font-semibold mb-4">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        Disponible para Consultoría
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-2">Alexander Haro</h3>
+                    <p class="text-brand-600 font-medium mb-6 text-lg">Consultor Principal / Especialista en Datos y ML</p>
+                    
+                    <p class="text-slate-600 mb-8 leading-relaxed">
+                        Con experiencia en el sector tecnológico y financiero, ayudo a transformar datos complejos en decisiones automatizadas y rentables. Mi enfoque es construir soluciones analíticas robustas y agentes inteligentes adaptados a las necesidades reales de su institución.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row flex-wrap gap-4">
+                        <a href="https://wa.me/59390178646" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20b858] text-white px-5 py-3.5 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            WhatsApp
+                        </a>
+                        <a href="https://www.linkedin.com/in/afhs/" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-[#0A66C2] hover:bg-[#084e96] text-white px-5 py-3.5 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            <i data-lucide="linkedin" class="w-5 h-5"></i> LinkedIn
+                        </a>
+                        <a href="mailto:alexander.haro.19999@gmail.com" class="flex-1 flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-3.5 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            <i data-lucide="mail" class="w-5 h-5"></i> Correo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. CTA Section -->
+    <section id="contacto" class="py-24 relative overflow-hidden">
+        <!-- Background -->
+        <div class="absolute inset-0 bg-brand-600"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-brand-600 to-slate-900 opacity-90"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Transforme sus datos en decisiones inteligentes.</h2>
+            <p class="text-brand-100 text-lg mb-10 max-w-2xl mx-auto">Dé el salto hacia la automatización analítica. Descubra cómo nuestros modelos y agentes pueden optimizar su rentabilidad y reducir el riesgo hoy mismo.</p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-slate-900 hover:bg-slate-50 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
+                    Agendar una reunión
+                </button>
+                <button class="bg-transparent border border-white text-white hover:bg-white/10 px-8 py-4 rounded-xl font-bold text-lg transition-all">
+                    Solicitar propuesta
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. Footer -->
+    <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-6 h-6 rounded bg-brand-600 flex items-center justify-center">
+                            <i data-lucide="bar-chart-2" class="text-white w-3 h-3"></i>
+                        </div>
+                        <span class="font-bold text-lg tracking-tight text-white">Data<span class="text-brand-500">Intel</span></span>
+                    </div>
+                    <p class="text-sm">Inteligencia de negocios y agentes de machine learning para el sector financiero y comercial.</p>
+                </div>
+                
+                <!-- Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Servicios</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Dashboards BI</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Modelos Predictivos</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Agentes de IA</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Alertas Tempranas</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Sectors -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Sectores</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Bancos y Cooperativas</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Fintechs</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Retail y Comercio</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Seguros</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Contacto</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> alexander.haro.19999@gmail.com</li>
+                        <li class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> +593 90 178 646</li>
+                    </ul>
+                    <div class="flex gap-4 mt-6">
+                        <a href="https://www.linkedin.com/in/afhs/" target="_blank" class="text-slate-400 hover:text-white transition-colors"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-slate-800 text-sm text-center md:text-left flex flex-col md:flex-row justify-between items-center">
+                <p>&copy; 2026 Data Intelligence & ML Agents. Todos los derechos reservados.</p>
+                <div class="space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white">Privacidad</a>
+                    <a href="#" class="hover:text-white">Términos</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-sm');
+                navbar.classList.replace('glass', 'bg-white/90');
+            } else {
+                navbar.classList.remove('shadow-sm');
+                navbar.classList.replace('bg-white/90', 'glass');
+            }
+        });
+
+        // Tabs Logic
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active classes
+                tabBtns.forEach(b => {
+                    b.classList.remove('bg-slate-900', 'text-white', 'shadow');
+                    b.classList.add('text-slate-600');
+                });
+                tabContents.forEach(c => c.classList.add('hidden'));
+
+                // Add active classes
+                btn.classList.add('bg-slate-900', 'text-white', 'shadow');
+                btn.classList.remove('text-slate-600');
+                const target = document.getElementById(btn.dataset.target);
+                target.classList.remove('hidden');
+            });
+        });
+
+        // Story Scroll Logic (Intersection Observer)
+        const steps = document.querySelectorAll('.story-step');
+        const visuals = [
+            document.getElementById('visual-1'),
+            document.getElementById('visual-2'),
+            document.getElementById('visual-3'),
+            document.getElementById('visual-4')
+        ];
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-40% 0px -40% 0px', // Trigger when element is roughly in middle of screen
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Activate step text
+                    steps.forEach(s => s.classList.remove('active'));
+                    entry.target.classList.add('active');
+
+                    // Find index of current step
+                    const index = Array.from(steps).indexOf(entry.target);
+                    
+                    // Activate corresponding visual
+                    visuals.forEach((v, i) => {
+                        if(v) {
+                            if (i === index) {
+                                v.classList.replace('opacity-0', 'opacity-100');
+                                v.style.zIndex = "10";
+                            } else {
+                                v.classList.replace('opacity-100', 'opacity-0');
+                                v.style.zIndex = "0";
+                            }
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        steps.forEach(step => observer.observe(step));
+    </script>
+</body>
+</html>
