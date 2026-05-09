@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Intelligence & ML Agents | 3D Experience</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                            950: '#450a0a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Three.js & Vanta.js para el fondo 3D del Hero -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <!-- Vanilla Tilt para tarjetas 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafafa;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Glassmorphism 3D */
+        .glass-3d {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-dark-3d {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* Hero 3D Container */
+        #vanta-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* 3D Visual Container in Story Scroll */
+        .perspective-container {
+            perspective: 1200px;
+        }
+        
+        .preserve-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        .pop-out {
+            transform: translateZ(60px);
+            box-shadow: -20px 20px 30px rgba(0,0,0,0.15);
+        }
+        
+        .pop-out-extreme {
+            transform: translateZ(100px);
+        }
+
+        /* Story scroll styles */
+        .story-container { position: relative; }
+        .story-content { position: sticky; top: 20vh; height: 60vh; display: flex; align-items: center; }
+        .story-step {
+            opacity: 0.2;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateX(-30px);
+            padding: 4rem 0;
+        }
+        .story-step.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Floating animations for Hero Cards */
+        @keyframes float-3d {
+            0% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+            50% { transform: translateY(-15px) rotateX(5deg) rotateY(5deg); }
+            100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+        }
+        .animate-float-3d {
+            animation: float-3d 6s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+        .animate-float-3d-delayed {
+            animation: float-3d 7s ease-in-out infinite 2s;
+            transform-style: preserve-3d;
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- 1. Header -->
+    <header class="fixed w-full top-0 z-50 glass-3d transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                    <div class="w-8 h-8 rounded bg-brand-600 flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+                        <i data-lucide="box" class="text-white w-5 h-5"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight text-slate-900">Data<span class="text-brand-600">Intel</span></span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="text-slate-700 hover:text-brand-600 font-medium text-sm transition-colors">Inicio</a>
+                    <a href="#servicios" class="text-slate-700 hover:text-brand-600 font-medium text-sm transition-colors">Servicios 3D</a>
+                    <a href="#soluciones" class="text-slate-700 hover:text-brand-600 font-medium text-sm transition-colors">Industrias</a>
+                    <a href="#consultor" class="text-slate-700 hover:text-brand-600 font-medium text-sm transition-colors">Consultor</a>
+                </nav>
+
+                <!-- CTA Button -->
+                <div class="hidden md:flex items-center">
+                    <a href="#consultor" class="bg-slate-900 hover:bg-brand-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-xl hover:shadow-brand-500/40 transform hover:-translate-y-1 flex items-center gap-2">
+                        Solicitar diagnóstico <i data-lucide="zap" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. Hero Section con Vanta.js Network 3D -->
+    <section id="inicio" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] flex items-center">
+        <!-- Contenedor del Canvas 3D -->
+        <div id="vanta-canvas"></div>
+        
+        <!-- Overlay sutil para que el texto sea legible -->
+        <div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-0"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="perspective-container">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-brand-200 text-brand-700 text-xs font-semibold mb-6 shadow-sm backdrop-blur-md">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                        Arquitectura de Datos & IA
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 text-slate-900 drop-shadow-sm">
+                        Agentes <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-red-400">Neuronales</span> e Inteligencia Financiera
+                    </h1>
+                    <p class="text-lg text-slate-700 mb-8 max-w-xl leading-relaxed font-medium bg-white/30 p-2 rounded-lg backdrop-blur-sm">
+                        Conectamos sus nodos de datos dispersos en una red tridimensional de alertas tempranas, modelos predictivos y analítica prescriptiva en tiempo real.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#consultor" class="bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-xl font-bold text-center transition-all shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:shadow-[0_0_30px_rgba(239,68,68,0.6)] transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                            Iniciar Evolución <i data-lucide="rocket" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Floating 3D Cards -->
+                <div class="relative h-[400px] lg:h-[500px] z-10 hidden md:block perspective-container">
+                    
+                    <!-- Main Dashboard Card -->
+                    <div class="absolute top-10 right-10 glass-3d rounded-2xl p-6 w-80 animate-float-3d" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.5">
+                        <div class="flex items-center justify-between mb-4 transform translateZ(30px)">
+                            <h3 class="font-bold text-slate-800 text-sm">Predicción de Default (Red Neuronal)</h3>
+                            <i data-lucide="network" class="text-brand-600 w-5 h-5"></i>
+                        </div>
+                        <div class="flex items-end gap-2 mb-2 transform translateZ(40px)">
+                            <span class="text-4xl font-extrabold text-slate-900 drop-shadow-md">96.8%</span>
+                            <span class="text-xs text-green-600 font-bold mb-1 bg-green-100 px-2 py-1 rounded-full">+3.2% Precision</span>
+                        </div>
+                        <!-- Fake 3D Chart -->
+                        <div class="mt-6 flex items-end gap-2 h-16 transform translateZ(50px) preserve-3d">
+                            <div class="w-1/5 bg-gradient-to-t from-slate-200 to-slate-100 rounded shadow-md h-1/3"></div>
+                            <div class="w-1/5 bg-gradient-to-t from-slate-300 to-slate-200 rounded shadow-md h-1/2"></div>
+                            <div class="w-1/5 bg-gradient-to-t from-brand-300 to-brand-200 rounded shadow-md h-3/4"></div>
+                            <div class="w-1/5 bg-gradient-to-t from-brand-500 to-brand-400 rounded shadow-md h-4/5"></div>
+                            <div class="w-1/5 bg-gradient-to-t from-brand-700 to-brand-600 rounded shadow-lg h-full transform translateZ(10px)"></div>
+                        </div>
+                    </div>
+
+                    <!-- AI Agent Card -->
+                    <div class="absolute bottom-10 left-0 glass-dark-3d rounded-2xl p-5 w-64 animate-float-3d-delayed" data-tilt data-tilt-max="20" data-tilt-glare="true" data-tilt-max-glare="0.3">
+                        <div class="flex gap-4 transform translateZ(30px)">
+                            <div class="bg-red-500/20 p-3 rounded-xl h-fit border border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                                <i data-lucide="cpu" class="text-red-400 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white text-sm font-bold">Agente Híbrido</h4>
+                                <p class="text-slate-300 text-xs mt-1">Detectada fuga de capital en Sucursal Norte. Ejecutando bloqueo de retención...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Story-Scroll Section 3D -->
+    <section class="py-32 bg-slate-100 border-t border-slate-200 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-20">
+                <h2 class="text-brand-600 font-bold tracking-widest uppercase text-xs mb-2">Despliegue Arquitectónico</h2>
+                <h3 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4">Dimensión de Datos</h3>
+            </div>
+
+            <!-- Story Scroll Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 relative">
+                <!-- Left: Scrollable Text -->
+                <div class="story-container relative pb-32">
+                    <div class="story-step active" id="step-1">
+                        <div class="w-14 h-14 bg-white shadow-lg rounded-2xl flex items-center justify-center mb-6 text-brand-600 text-2xl font-black border border-slate-100 transform -rotate-3">01</div>
+                        <h4 class="text-3xl font-bold text-slate-900 mb-4">Lago de Datos</h4>
+                        <p class="text-slate-600 text-lg leading-relaxed">Centralización de información multidimensional. Estructuramos sus silos en un entorno de alta disponibilidad.</p>
+                    </div>
+
+                    <div class="story-step" id="step-2">
+                        <div class="w-14 h-14 bg-white shadow-lg rounded-2xl flex items-center justify-center mb-6 text-brand-600 text-2xl font-black border border-slate-100 transform rotate-3">02</div>
+                        <h4 class="text-3xl font-bold text-slate-900 mb-4">Procesamiento Espacial</h4>
+                        <p class="text-slate-600 text-lg leading-relaxed">Generamos vistas holísticas de sus KPIs corporativos, modelando el comportamiento comercial en tiempo real.</p>
+                    </div>
+
+                    <div class="story-step" id="step-3">
+                        <div class="w-14 h-14 bg-white shadow-lg rounded-2xl flex items-center justify-center mb-6 text-brand-600 text-2xl font-black border border-slate-100 transform -rotate-3">03</div>
+                        <h4 class="text-3xl font-bold text-slate-900 mb-4">Entrenamiento de Modelos</h4>
+                        <p class="text-slate-600 text-lg leading-relaxed">Nuestros algoritmos analizan el volumen de su ecosistema para predecir morosidad y patrones de rentabilidad oculta.</p>
+                    </div>
+                </div>
+
+                <!-- Right: Sticky 3D Visuals -->
+                <div class="hidden lg:block relative perspective-container">
+                    <!-- Contenedor que rota en base al scroll -->
+                    <div class="sticky top-1/4 h-[500px] w-full rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl border border-slate-700 preserve-3d" id="visual-container" style="transform: rotateY(-15deg) rotateX(5deg);">
+                        
+                        <!-- Glow effect -->
+                        <div class="absolute inset-0 rounded-[2rem] shadow-[inset_0_0_50px_rgba(0,0,0,0.5)] z-20 pointer-events-none"></div>
+                        
+                        <!-- Visual 1: Database/Integration -->
+                        <div class="absolute inset-0 p-8 flex flex-col items-center justify-center transition-all duration-700 opacity-100 preserve-3d pop-out" id="visual-1">
+                            <div class="w-32 h-32 border-4 border-brand-500 rounded-full animate-[spin_4s_linear_infinite] flex items-center justify-center pop-out-extreme shadow-[0_0_30px_rgba(239,68,68,0.5)]">
+                                <div class="w-24 h-24 border-4 border-slate-600 rounded-full animate-[spin_3s_linear_infinite_reverse]"></div>
+                            </div>
+                            <div class="mt-8 text-white font-mono text-center pop-out">
+                                <div class="text-brand-400 font-bold mb-2">INITIALIZING DATALAKE</div>
+                                <div class="text-xs text-slate-400">Nodes connected: 4,096</div>
+                                <div class="text-xs text-slate-400">Latency: 12ms</div>
+                            </div>
+                        </div>
+
+                        <!-- Visual 2: Dashboard -->
+                        <div class="absolute inset-0 p-8 flex flex-col items-center justify-center transition-all duration-700 opacity-0 preserve-3d transform scale-90" id="visual-2">
+                            <div class="grid grid-cols-2 gap-4 w-full pop-out">
+                                <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-600 shadow-lg transform translateZ(20px)">
+                                    <div class="text-slate-400 text-xs mb-1">Volumen</div>
+                                    <div class="text-2xl text-white font-bold">12.4TB</div>
+                                </div>
+                                <div class="bg-brand-900/50 p-4 rounded-xl border border-brand-500/50 shadow-lg transform translateZ(40px)">
+                                    <div class="text-brand-300 text-xs mb-1">Procesamiento</div>
+                                    <div class="text-2xl text-white font-bold">Real-time</div>
+                                </div>
+                            </div>
+                            <div class="w-full h-32 mt-6 bg-slate-800/80 rounded-xl border border-slate-600 flex items-end p-4 gap-2 pop-out-extreme">
+                                <div class="w-1/4 bg-brand-600 h-1/4 rounded-t animate-pulse"></div>
+                                <div class="w-1/4 bg-brand-500 h-2/4 rounded-t animate-pulse" style="animation-delay: 0.1s"></div>
+                                <div class="w-1/4 bg-brand-400 h-3/4 rounded-t animate-pulse" style="animation-delay: 0.2s"></div>
+                                <div class="w-1/4 bg-white h-full rounded-t shadow-[0_0_15px_rgba(255,255,255,0.8)]"></div>
+                            </div>
+                        </div>
+
+                        <!-- Visual 3: Machine Learning -->
+                        <div class="absolute inset-0 p-8 flex items-center justify-center transition-all duration-700 opacity-0 preserve-3d" id="visual-3">
+                             <div class="relative w-48 h-48 pop-out-extreme">
+                                <!-- Core -->
+                                <div class="absolute inset-0 bg-brand-600 rounded-lg transform rotate-45 shadow-[0_0_50px_rgba(239,68,68,0.8)] animate-pulse"></div>
+                                <!-- Rings -->
+                                <div class="absolute -inset-4 border-2 border-slate-500 rounded-full animate-[spin_8s_linear_infinite]"></div>
+                                <div class="absolute -inset-8 border border-slate-600 rounded-full animate-[spin_12s_linear_infinite_reverse]"></div>
+                                
+                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white font-black text-2xl z-10">AI</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Servicios 3D -->
+    <section id="servicios" class="py-24 bg-white perspective-container">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Portafolio Analítico</h2>
+                <p class="text-slate-600 text-lg">Modelos tridimensionales de negocio.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Tarjetas con Vanilla Tilt -->
+                <div class="service-card bg-slate-50 rounded-2xl p-8 border border-slate-200 shadow-md cursor-pointer" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+                    <div class="w-14 h-14 bg-brand-100 rounded-xl flex items-center justify-center mb-6 transform translateZ(30px) shadow-lg">
+                        <i data-lucide="layout-dashboard" class="w-7 h-7 text-brand-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 transform translateZ(20px)">Dashboards 360°</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed transform translateZ(10px)">Visualice el rendimiento de cada sucursal en paneles que extraen la verdad de sus datos al instante.</p>
+                </div>
+
+                <div class="service-card bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-xl cursor-pointer" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.4">
+                    <div class="w-14 h-14 bg-brand-600 rounded-xl flex items-center justify-center mb-6 transform translateZ(40px) shadow-[0_0_20px_rgba(239,68,68,0.5)]">
+                        <i data-lucide="network" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 transform translateZ(30px)">Redes Predictivas</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed transform translateZ(20px)">Algoritmos profundos que anticipan quiebras, morosidad y fuga de socios con precisión matemática.</p>
+                </div>
+
+                <div class="service-card bg-slate-50 rounded-2xl p-8 border border-slate-200 shadow-md cursor-pointer" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+                    <div class="w-14 h-14 bg-brand-100 rounded-xl flex items-center justify-center mb-6 transform translateZ(30px) shadow-lg">
+                        <i data-lucide="bot" class="w-7 h-7 text-brand-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 transform translateZ(20px)">Agentes Generativos</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed transform translateZ(10px)">Bots financieros entrenados con su núcleo de negocio para dar respuestas corporativas a sus gerentes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. Perfil del Consultor (Adaptado a 3D) -->
+    <section id="consultor" class="py-24 bg-slate-900 border-t border-slate-800 perspective-container">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-dark-3d rounded-3xl overflow-hidden flex flex-col md:flex-row items-center border border-slate-700" data-tilt data-tilt-max="5" data-tilt-speed="1000" data-tilt-glare="true" data-tilt-max-glare="0.1">
+                <!-- Foto -->
+                <div class="w-full md:w-2/5 relative h-80 md:h-[450px] transform translateZ(30px)">
+                    <img src="foto para web.jpg" alt="Alexander Haro" class="absolute inset-0 w-full h-full object-cover object-top filter contrast-125" onerror="this.src='https://ui-avatars.com/api/?name=Alexander+Haro&size=512&background=ef4444&color=fff'">
+                    <!-- Overlay de tecnología -->
+                    <div class="absolute inset-0 bg-brand-600/20 mix-blend-overlay"></div>
+                </div>
+                <!-- Contenido -->
+                <div class="w-full md:w-3/5 p-10 md:p-14 transform translateZ(40px)">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 border border-slate-600 text-green-400 text-xs font-semibold mb-4 shadow-inner">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></span>
+                        Arquitecto Activo
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-black text-white mb-2 drop-shadow-lg">Alexander Haro</h3>
+                    <p class="text-brand-400 font-bold mb-6 text-lg tracking-wide">Consultor Principal / Especialista en Datos y ML</p>
+                    
+                    <p class="text-slate-300 mb-8 leading-relaxed font-medium">
+                        Construyo infraestructuras analíticas y entreno modelos de Machine Learning para instituciones financieras y comerciales. Mi objetivo es convertir tu ecosistema de datos en una máquina autónoma de rentabilidad.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row flex-wrap gap-4">
+                        <a href="https://wa.me/59390178646" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20b858] text-white px-5 py-3.5 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(37,211,102,0.4)] hover:shadow-[0_0_25px_rgba(37,211,102,0.6)] transform hover:-translate-y-1 preserve-3d">
+                            WhatsApp
+                        </a>
+                        <a href="https://www.linkedin.com/in/afhs/" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-[#0A66C2] hover:bg-[#084e96] text-white px-5 py-3.5 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(10,102,194,0.4)] transform hover:-translate-y-1 preserve-3d">
+                            LinkedIn
+                        </a>
+                        <a href="mailto:alexander.haro.19999@gmail.com" class="flex-1 flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-3.5 rounded-xl font-bold transition-all border border-slate-600 shadow-lg transform hover:-translate-y-1 preserve-3d">
+                            Correo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-slate-500 py-12 border-t border-slate-900 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <div class="w-6 h-6 rounded bg-brand-600 flex items-center justify-center">
+                    <i data-lucide="box" class="text-white w-3 h-3"></i>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-white">Data<span class="text-brand-600">Intel</span> <span class="text-xs font-normal text-slate-600 ml-2">v2.0 3D</span></span>
+            </div>
+            <p class="text-sm">© 2026 Inteligencia Artificial Aplicada a Negocios.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Inicializar Iconos
+        lucide.createIcons();
+
+        // Efecto Navbar
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-lg');
+                navbar.classList.replace('glass-3d', 'bg-white/95');
+                navbar.classList.add('backdrop-blur-xl');
+            } else {
+                navbar.classList.remove('shadow-lg');
+                navbar.classList.replace('bg-white/95', 'glass-3d');
+                navbar.classList.remove('backdrop-blur-xl');
+            }
+        });
+
+        // 1. Inicializar Fondo 3D Vanta.js (Red Neuronal)
+        VANTA.NET({
+            el: "#vanta-canvas",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0xef4444, // Rojo Brand
+            backgroundColor: 0xfafafa, // Fondo claro
+            points: 12.00,
+            maxDistance: 22.00,
+            spacing: 18.00,
+            showDots: true
+        });
+
+        // 2. Lógica del Story Scroll 3D
+        const steps = document.querySelectorAll('.story-step');
+        const visuals = [
+            document.getElementById('visual-1'),
+            document.getElementById('visual-2'),
+            document.getElementById('visual-3')
+        ];
+        const visualContainer = document.getElementById('visual-container');
+
+        // Rotación parallax basada en scroll para el contenedor visual
+        window.addEventListener('scroll', () => {
+            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            // Rotar sutilmente el contenedor 3D basado en el scroll
+            const rotateY = -15 + (scrollPercent * 30); 
+            visualContainer.style.transform = `rotateY(${rotateY}deg) rotateX(5deg)`;
+        });
+
+        const observerOptions = { root: null, rootMargin: '-40% 0px -40% 0px', threshold: 0 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    steps.forEach(s => s.classList.remove('active'));
+                    entry.target.classList.add('active');
+
+                    const index = Array.from(steps).indexOf(entry.target);
+                    
+                    visuals.forEach((v, i) => {
+                        if(v) {
+                            if (i === index) {
+                                v.classList.replace('opacity-0', 'opacity-100');
+                                v.classList.replace('scale-90', 'scale-100');
+                                v.style.zIndex = "10";
+                            } else {
+                                v.classList.replace('opacity-100', 'opacity-0');
+                                v.classList.replace('scale-100', 'scale-90');
+                                v.style.zIndex = "0";
+                            }
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        steps.forEach(step => observer.observe(step));
+    </script>
+</body>
+</html>
